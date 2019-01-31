@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	</head>
+	<body>
+		<h1>EVEREST</h1>
+
+		<h2>Climbs</h2>
+			<div id="climbs">
+				<p id="climb-text">You should not see me</p>
+			</div>
+
+		<script>
+			// function getClimbsByPerson(data) {
+			// 	var climberCounts = {};
+			// 	data.climbs.forEach(function(climbObject) {
+			// 		var climberName = climbObject.user;
+			// 		if (climberName in climberCounts) {
+			// 			var oldCount = climberCounts[climberName];
+			// 			climberCounts[climberName] = oldCount + 1;	
+			// 		} else {
+			// 			climberCounts[climberName] = 1;
+			// 		}
+			// 	});
+			// 	return climberCounts;	
+			// }
+			// function loadClimbCountsTable(climberCounts) {
+			// 	var table = document.getElementById("counts-table");
+			// 	Object.keys(climberCounts).forEach(function(key) {
+			// 		newRow = table.insertRow(-1);
+			// 		climberCell = newRow.insertCell(-1);
+			// 		climberCell.innerHTML = key.toString();
+			// 		countsCell = newRow.insertCell(-1);
+			// 		countsCell.innerHTML = (climberCounts[key]*ClimbIncrementMeters).toString();
+			// 	});
+			// }
+			function reloadData() {
+				$.getJSON("data/climbs.json", function(data) {
+					fullData = data;
+					document.getElementById("climb-text").innerHTML = JSON.stringify(data);
+				})
+			}
+			window.setInterval(function() {
+				reloadData();
+			}, 5000);
+		</script>
+	</body>
+</html>
