@@ -12,33 +12,35 @@
 			</div>
 
 		<script>
-			// function getClimbsByPerson(data) {
-			// 	var climberCounts = {};
-			// 	data.climbs.forEach(function(climbObject) {
-			// 		var climberName = climbObject.user;
-			// 		if (climberName in climberCounts) {
-			// 			var oldCount = climberCounts[climberName];
-			// 			climberCounts[climberName] = oldCount + 1;	
-			// 		} else {
-			// 			climberCounts[climberName] = 1;
-			// 		}
-			// 	});
-			// 	return climberCounts;	
-			// }
-			// function loadClimbCountsTable(climberCounts) {
-			// 	var table = document.getElementById("counts-table");
-			// 	Object.keys(climberCounts).forEach(function(key) {
-			// 		newRow = table.insertRow(-1);
-			// 		climberCell = newRow.insertCell(-1);
-			// 		climberCell.innerHTML = key.toString();
-			// 		countsCell = newRow.insertCell(-1);
-			// 		countsCell.innerHTML = (climberCounts[key]*ClimbIncrementMeters).toString();
-			// 	});
-			// }
+			function getClimbsByPerson(data) {
+				var climberCounts = {};
+				data.climbs.forEach(function(climbObject) {
+					var climberName = climbObject.user;
+					if (climberName in climberCounts) {
+						var oldCount = climberCounts[climberName];
+						climberCounts[climberName] = oldCount + 1;	
+					} else {
+						climberCounts[climberName] = 1;
+					}
+				});
+				return climberCounts;	
+			}
+			function loadClimbCountsTable(climberCounts) {
+				var table = document.getElementById("counts-table");
+				Object.keys(climberCounts).forEach(function(key) {
+					newRow = table.insertRow(-1);
+					climberCell = newRow.insertCell(-1);
+					climberCell.innerHTML = key.toString();
+					countsCell = newRow.insertCell(-1);
+					countsCell.innerHTML = (climberCounts[key]*ClimbIncrementMeters).toString();
+				});
+			}
+
 			function reloadData() {
 				$.getJSON("data/climbs.json", function(data) {
 					fullData = data;
-					document.getElementById("climb-text").innerHTML = JSON.stringify(data);
+					counts = getClimbsByPerson(fullData);
+					document.getElementById("climb-text").innerHTML = JSON.stringify(counts);
 				})
 			}
 			window.setInterval(function() {
