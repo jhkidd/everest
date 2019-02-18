@@ -115,7 +115,7 @@
 			}
 
 			function reloadData() {
-				$.getJSON("data/wk1climbs.json", function(data) {
+				$.getJSON("data/climbdata.json", function(data) {
 					currentData = data;
 					document.getElementById("climb-text").innerHTML = "";
 					counts = getClimbsByPerson(currentData);
