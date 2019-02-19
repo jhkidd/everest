@@ -6,10 +6,22 @@ import time
 from tkinter import *
 
 user_map = {
-	"r": "Rebecca",
-	"j": "Josh",
-	"d": "Dom",
-	"a": "Andrew"
+	"a": "aileen",
+	"d": "andrew",
+	"c": "davechipman",
+	"v": "davemoseley",
+	"u": "davidmulcahy",
+	"o": "dom",
+	"i": "ian",
+	"j": "jane",
+	"y": "josh",
+	"l": "lauren",
+	"m": "maxine",
+	"n": "nick",
+	"x": "rebecca",
+	"r": "robin",
+	"s": "shirlee",
+	"t": "tina"
 }
 
 messages = ["Good work!", "Well done!", "Smashed it!", "Congrats!"]
