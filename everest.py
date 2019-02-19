@@ -12,6 +12,7 @@ user_map = {
 	"v": "dave",
 	"u": "david",
 	"o": "dom",
+	"g": "greg",
 	"i": "ian",
 	"j": "jane",
 	"y": "josh",
