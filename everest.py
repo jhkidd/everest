@@ -28,7 +28,7 @@ user_map = {
 messages = ["Good work!", "Well done!", "Smashed it!", "Congrats!"]
 
 def push_update(username, num_flights):
-    jsonFile = open("data/climbs.json", "r") # Open the JSON file for reading
+    jsonFile = open("data/climbdata.json", "r") # Open the JSON file for reading
     data = json.load(jsonFile) # Read the JSON into the buffer
     jsonFile.close() # Close the JSON file
 
