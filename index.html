@@ -99,7 +99,7 @@
 					{"name": "Machu Picchu", "heightMeters": 2430},
 					{"name": "Maximum helicopter altitude", "heightMeters": 7620}
 				]
-				
+
 				// show all milestones within bufferMeters of the highest climber
 				var minMilestoneMeters = 0, maxMilestoneMeters = 0, bufferMeters = 500;
 				for (i = 0; i < data.datasets[0].data.length; i++) {
@@ -120,7 +120,9 @@
 		 						borderWidth: 4,
 		 						label: {
 		 							enabled: true,
-		 							content: d.name
+		 							content: d.name,
+		 							position: 'right',
+		 							xAdjust: -17
 		 						}
 						 })
 					}
