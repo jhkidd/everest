@@ -42,11 +42,11 @@ def push_update(username, num_flights):
     data["climbs"] = tmp
 
     ## Save our changes to JSON file
-    jsonFile = open("data/climbs.json", "w+")
+    jsonFile = open("data/climbdata.json", "w+")
     jsonFile.write(json.dumps(data))
     jsonFile.close()
 
-    add_command = "git add data/climbs.json"
+    add_command = "git add data/climbdata.json"
     commit_command = "git commit -m \"update at {}\"".format(str(time.time()))
     push_command = "git push"
     full_command = " && ".join([add_command, commit_command, push_command])
