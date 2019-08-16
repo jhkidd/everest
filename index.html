@@ -5,6 +5,7 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
 		<!--<script src='https://d3js.org/d3.v4.min.js'></script>-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
 
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" integrity="sha384-PmY9l28YgO4JwMKbTvgaS7XNZJ30MK9FAZjjzXtlqyZCqBY6X6bXIkM++IkyinN+" crossorigin="anonymous">
 		<link rel="stylesheet" href="css/main.css">
@@ -52,7 +53,7 @@
 						climberCounts[climberName] = climbObject.flights;
 					}
 				});
-				return climberCounts;	
+				return climberCounts;
 			}
 
 			function transformCounts(countData) {
@@ -85,10 +86,46 @@
 				return total;
 			}
 
+			function getAnnotations(data) {
+				var annotations = []
+				var milestones = [
+					{"name": "Ben Nevis", "heightMeters": 1345},
+					{"name": "Empire State Building", "heightMeters": 443},
+					{"name": "Mont Blanc", "heightMeters": 4807}
+				]
+				// show all milestones within bufferMeters of the highest climber
+				var minMilestoneMeters = 0, maxMilestoneMeters = 0, bufferMeters = 500;
+				for (i = 0; i < data.datasets[0].data.length; i++) {
+					var heightMeters = data.datasets[0].data[i]
+					if (heightMeters + bufferMeters > maxMilestoneMeters) {
+						maxMilestoneMeters = heightMeters + bufferMeters
+					}
+				}
+
+        milestones.forEach(function(d) {
+          if (d.heightMeters < maxMilestoneMeters && d.heightMeters > minMilestoneMeters) {
+             annotations.push({
+		 						type: 'line',
+		 						mode: 'horizontal',
+		 						scaleID: 'y-axis-0',
+		 						value: d.heightMeters,
+		 						borderColor: 'rgb(128,128,128)',
+		 						borderWidth: 4,
+		 						label: {
+		 							enabled: true,
+		 							content: d.name
+		 						}
+						 })
+					}
+				})
+				return annotations
+			}
+
 			function refreshChart(counts) {
 				var dataToLoad = transformCounts(counts);
 				currentTotal = totalFromCounts(counts);
 				var ctx = document.getElementById('individualChart').getContext('2d');
+				var annotations = getAnnotations(dataToLoad);
 				var chart = new Chart(ctx, {
 				    type: 'bar', // The type of chart we want to create
 				    data: dataToLoad, //our data
@@ -109,7 +146,8 @@
 				    				fontSize: 24
 				    			}
 				    		}]
-				    	}
+				    	},
+							annotation: { annotations: annotations }
 				    } // Configuration options go here
 				});
 			}
