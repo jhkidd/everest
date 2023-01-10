@@ -6,26 +6,6 @@ import time
 from tkinter import *
 from tkinter import messagebox, ttk
 
-user_map = {
-	"a": "aileen",
-	"d": "andrew",
-	"c": "davechipman",
-	"v": "dave",
-	"u": "david",
-	"o": "dom",
-	"g": "greg",
-	"i": "ian",
-	"j": "jane",
-	"y": "josh",
-	"l": "lauren",
-	"m": "maxine",
-	"n": "nick",
-	"x": "rebecca",
-	"r": "robin",
-	"s": "shirlee",
-	"t": "tina"
-}
-
 users = [
 	"Joshua Kidd",
 	"Bryn Mills",
@@ -164,4 +144,5 @@ def main():
 
 
 if __name__ == "__main__":
+
 	main()
