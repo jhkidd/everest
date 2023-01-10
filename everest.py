@@ -4,6 +4,7 @@ import os
 import random
 import time
 from tkinter import *
+from tkinter import messagebox, ttk
 
 user_map = {
 	"a": "aileen",
@@ -25,7 +26,13 @@ user_map = {
 	"t": "tina"
 }
 
-messages = ["Good work!", "Well done!", "Smashed it!", "Congrats!"]
+users = [
+	"Joshua Kidd",
+	"Bryn Mills",
+	"Samuel Dysch",
+]
+
+messages = ["Good work!", "Well done!", "Smashed it!", "Congrats!", "Sensational!", "You're on fire!", "Wonderful!", "Outstanding!", "Marvelous!", "Tremendous!", "Wow!"]
 
 def push_update(username, num_flights):
     jsonFile = open("data/climbdata.json", "r") # Open the JSON file for reading
@@ -45,13 +52,12 @@ def push_update(username, num_flights):
     jsonFile = open("data/climbdata.json", "w+")
     jsonFile.write(json.dumps(data))
     jsonFile.close()
-    print("data written to file")
 
     add_command = "git add data/climbdata.json"
     commit_command = "git commit -m \"update at {}\"".format(str(time.time()))
     push_command = "git push"
     full_command = " && ".join([add_command, commit_command, push_command])
-    os.system(full_command)
+    #os.system(full_command)
     return True
 
 
@@ -117,10 +123,20 @@ def handle_keyrelease_event(event, labels):
 			current_mode = "user"
 			instruction_label.update("Please enter user character...")
 
+def handle_logged_steps():
+
+	(instruction_label, response_label, congrats_label) = labels
+	user = combo.get()
+
+	push_update(user, 5)
+
+	congrats_label.temp_update(random.choice(messages), 2500)
 
 def main():
 	global current_mode
 	global current_user
+	global combo
+	global labels
 
 	app = Tk()
 		
@@ -130,13 +146,17 @@ def main():
 	current_user = ""
 	
 	title_label = FlexiLabel(frame, "INRIX Everest Challenge", 100, 40)
-	instruction_label = FlexiLabel(frame, "Please enter user character...", 300, 22)
+	instruction_label = FlexiLabel(frame, "Please select user...", 300, 22)
 	response_label = FlexiLabel(frame, "", 400, 22)
 	congrats_label = FlexiLabel(frame, "", 600, 30)
 	labels = (instruction_label, response_label, congrats_label)
 	
-	frame.bind("<KeyPress>", lambda event: handle_keypress_event(event, labels))
-	frame.bind("<KeyRelease>", lambda event: handle_keyrelease_event(event, labels))
+	combo = ttk.Combobox(state="readonly",values=users)
+	combo.place(relx=.4, y=350, anchor= CENTER)  #.place(x=390, y=350)
+
+	button = ttk.Button(text="Submit", command=handle_logged_steps)
+	button.place(relx=.6, y=350, anchor= CENTER)
+
 	frame.focus_set()
 	frame.pack()
 	
