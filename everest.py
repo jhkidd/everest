@@ -7,9 +7,24 @@ from tkinter import *
 from tkinter import messagebox, ttk
 
 users = [
-	"Joshua Kidd",
+	"Aileen Holohan",
+	"Allan Chan",
+	"Andrew Turner",
 	"Bryn Mills",
+	"Caitlin Kilcoyne",
+	"Christina Schreiber",
+	"Dave Moseley",
+	"Egidijus Kukstas",
+	"Filipe Cunha",
+	"Ian Whelan",
+	"Jegor Popovkin",
+	"Joshua Kidd",
+	"Martin Rodgers",
+	"Max Culley",
+	"Nicholas Burgoyne",
+	"Ross Fenning",
 	"Samuel Dysch",
+	"Tina Buckley"
 ]
 
 messages = ["Good work!", "Well done!", "Smashed it!", "Congrats!", "Sensational!", "You're on fire!", "Wonderful!", "Outstanding!", "Marvelous!", "Tremendous!", "Wow!"]
@@ -37,7 +52,7 @@ def push_update(username, num_flights):
     commit_command = "git commit -m \"update at {}\"".format(str(time.time()))
     push_command = "git push"
     full_command = " && ".join([add_command, commit_command, push_command])
-    #os.system(full_command)
+    os.system(full_command)
     return True
 
 
@@ -63,60 +78,26 @@ class FlexiLabel:
 		self.v.set(msg)
 		self.label.after(millis, self.clear)
 		push_update(username, int(num_flights))
-		
-def handle_keypress_event(event, labels):
-	"""Handles events called on key press"""
-
-	global current_user
-	global current_mode
-	
-	(instruction_label, response_label, congrats_label) = labels
-
-	if current_mode == "number":
-		num_char = str(event.char)
-		if num_char in ['1','2','3','4','5','6','7']:
-			response_label.temp_update(num_char, 500)
-			instruction_label.update("Logging climb...")
-		else:
-			instruction_label.update("Please enter valid number for flights climbed...")
-	elif current_mode == "user":
-		user_char = str(event.char)
-		if user_char in list(user_map.keys()):
-			response_label.temp_update(user_map[user_char], 500)
-			instruction_label.update("Please enter number of flights climbed... ")
-			(current_user, current_mode) = (user_map[user_char], "number")
-		else:
-			instruction_label.update("Please enter valid user character... ")
-
-def handle_keyrelease_event(event, labels):
-	"""Handles events called on key release"""
-	global current_user
-	global current_mode
-	
-	(instruction_label, response_label, congrats_label) = labels
-
-	if current_mode == "number":
-		num_char = str(event.char)
-		if num_char in ['1','2','3','4','5','6','7']:
-			push_update(current_user, int(num_char))
-			congrats_label.temp_update(random.choice(messages), 1500)
-			current_mode = "user"
-			instruction_label.update("Please enter user character...")
 
 def handle_logged_steps():
 
 	(instruction_label, response_label, congrats_label) = labels
 	user = combo.get()
 
+	instruction_label.update(f"Logging climb for {user}...")
+	frame.update()
+
 	push_update(user, 5)
 
 	congrats_label.temp_update(random.choice(messages), 2500)
+	instruction_label.update("Please select user...")
 
 def main():
 	global current_mode
 	global current_user
 	global combo
 	global labels
+	global frame
 
 	app = Tk()
 		
