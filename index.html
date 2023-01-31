@@ -44,8 +44,10 @@
 
 			function getClimbsByPerson(data) {
 				var climberCounts = {};
+				climberCounts['Everyone'] = 0;
 				data.climbs.forEach(function(climbObject) {
 					var climberName = climbObject.climber;
+					climberCounts['Everyone'] = climberCounts['Everyone'] + climbObject.flights;
 					if (climberName in climberCounts) {
 						var newFlightCount = climberCounts[climberName] + climbObject.flights;
 						climberCounts[climberName] = newFlightCount;
