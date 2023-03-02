@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
+		<!--<script src='https://d3js.org/d3.v4.min.js'></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" integrity="sha384-PmY9l28YgO4JwMKbTvgaS7XNZJ30MK9FAZjjzXtlqyZCqBY6X6bXIkM++IkyinN+" crossorigin="anonymous">
+		<link rel="stylesheet" href="css/main.css">
+	</head>
+	<body>
+		<center><h1>INRIX EVEREST CHALLENGE</h1>
+
+		<div id="climbs">
+			<p id="climb-text">Loading climb data...</p>
+		</div>
+
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner" role="listbox">
+				<div class="item active" id="individualChartArea">
+					<canvas id="individualChart"></canvas>
+				</div>
+				<div class="item active" id="aggregateChartArea"></div>
+			</div>
+
+			<!-- Left and right controls -->
+	        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+	           <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+	           <span class="sr-only">Previous</span>
+	        </a>
+	        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+	           <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+	           <span class="sr-only">Next</span>
+	        </a>
+		</div></center>
+
+		<script>
+			var MetersPerFlight = 2.96;
+			var currentData = {};
+			var currentTotal = 0;
+
+			function getClimbsByPerson(data) {
+				var climberCounts = {};
+				climberCounts['Everyone'] = 0;
+				data.climbs.forEach(function(climbObject) {
+					var climberName = climbObject.climber;
+					climberCounts['Everyone'] = climberCounts['Everyone'] + climbObject.flights;
+					if (climberName in climberCounts) {
+						var newFlightCount = climberCounts[climberName] + climbObject.flights;
+						climberCounts[climberName] = newFlightCount;
+					} else {
+						climberCounts[climberName] = climbObject.flights;
+					}
+				});
+				return climberCounts;
+			}
+
+			function transformCounts(countData) {
+				var labels = [];
+				var values = [];
+
+				Object.keys(countData).forEach(function(climber) {
+					labels.push(climber);
+					var height = countData[climber]*MetersPerFlight;
+					values.push(height);
+				});
+
+				var data = {
+					labels: labels,
+					datasets: [{
+						backgroundColor: '#0B7B90',
+						borderColor: '#0B7B90',
+						data: values
+					}]
+				};
+
+				return data;
+			}
+
+			function totalFromCounts(counts) {
+				var total = 0;
+				Object.keys(counts).forEach(function(climber) {
+					total += counts[climber];
+				})
+				return total;
+			}
+
+			function getCurrentPacer() {
+				var oneDay = 24*60*60*1000;
+				var startDate = new Date(2023,0,01);
+				var currentDate = new Date();
+				var daysElapsed = Math.round(Math.abs((currentDate.getTime() - startDate.getTime())/(oneDay)));
+				var fractionElapsed = daysElapsed/365.0;
+				var currentTarget = fractionElapsed*8848.0;
+				return currentTarget;
+			}
+
+			function getAnnotations(data) {
+				var annotations = []
+				var milestones = [
+					{"name": "Ben Nevis", "heightMeters": 1345},
+					{"name": "Empire State Building", "heightMeters": 443},
+					{"name": "Mont Blanc", "heightMeters": 4807},
+					{"name": "Everest", "heightMeters": 8848},
+					{"name": "Fuji", "heightMeters": 3776},
+					{"name": "Kilimanjaro", "heightMeters": 5895},
+					{"name": "Mariana Trench", "heightMeters": 10994},
+					{"name": "Machu Picchu", "heightMeters": 2430},
+					{"name": "Maximum helicopter altitude", "heightMeters": 7620}
+				]
+
+				// show all milestones within bufferMeters of the highest climber
+				var minMilestoneMeters = 0, maxMilestoneMeters = 0, bufferMeters = 500;
+				for (i = 0; i < data.datasets[0].data.length; i++) {
+					var heightMeters = data.datasets[0].data[i]
+					if (heightMeters + bufferMeters > maxMilestoneMeters) {
+						maxMilestoneMeters = heightMeters + bufferMeters
+					}
+				}
+
+        milestones.forEach(function(d) {
+          if (d.heightMeters < maxMilestoneMeters && d.heightMeters > minMilestoneMeters) {
+             annotations.push({
+		 						type: 'line',
+		 						mode: 'horizontal',
+		 						scaleID: 'y-axis-0',
+		 						value: d.heightMeters,
+		 						borderColor: 'rgb(128,128,128)',
+		 						borderWidth: 4,
+		 						label: {
+		 							enabled: true,
+		 							content: d.name,
+		 							position: 'right'
+		 						}
+						 })
+					}
+				})
+        	  annotations.push({
+        	  					type: 'line',
+		 						mode: 'horizontal',
+		 						scaleID: 'y-axis-0',
+		 						value: getCurrentPacer(),
+		 						borderColor: 'rgb(255,0,0)',
+		 						borderWidth: 4,
+		 						label: {
+		 							enabled: true,
+		 							content: 'Pacer',
+		 							position: 'left'
+		 						}
+        	  })
+				return annotations
+			}
+
+			function refreshChart(counts) {
+				var dataToLoad = transformCounts(counts);
+				currentTotal = totalFromCounts(counts);
+				var ctx = document.getElementById('individualChart').getContext('2d');
+				var annotations = getAnnotations(dataToLoad);
+				var chart = new Chart(ctx, {
+				    type: 'bar', // The type of chart we want to create
+				    data: dataToLoad, //our data
+				    options: {
+				    	legend: {
+				    		display: false
+				    	},
+				    	scales: {
+				    		yAxes: [{
+				    			scaleLabel: {
+				    				display: true,
+				    				labelString: 'Climbed height in metres',
+				    				fontSize: 32
+				    			}
+				    		}],
+				    		xAxes: [{
+				    			ticks: {
+				    				fontSize: 24
+				    			}
+				    		}]
+				    	},
+							annotation: { annotations: annotations }
+				    } // Configuration options go here
+				});
+			}
+
+			function reloadData() {
+				$.getJSON("data/climbdata.json", function(data) {
+					currentData = data;
+					document.getElementById("climb-text").innerHTML = "";
+					counts = getClimbsByPerson(currentData);
+					if (totalFromCounts(counts) > currentTotal) {
+						refreshChart(counts);
+					}
+				});
+			}
+
+			window.setInterval(function() {
+				reloadData();
+			}, 5000);
+
+
+		</script>
+	</body>
+</html>
