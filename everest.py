@@ -22,6 +22,7 @@ users = [
 	"Ian Whelan",
 	"Jegor Popovkin",
 	"Joshua Kidd",
+	"Kavya Venkatachalapathy",
 	"Martin Rodgers",
 	"Max Culley",
 	"Nicholas Burgoyne",
