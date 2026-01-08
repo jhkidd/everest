@@ -7,28 +7,23 @@ from tkinter import *
 from tkinter import messagebox, ttk
 
 users = [
-	"Aileen Holohan",
 	"Allan Chan",
-	"Ashlie Waite",
 	"Andrew Turner",
+	"Anugrah Sebastian",
 	"Bryn Mills",
 	"Caitlin Kilcoyne",
-	"Christina Schreiber",
 	"Dave Moseley",
-	"David Stocksborough",
-	"Egidijus Kukstas",
 	"Emma Ryan",
 	"Filipe Cunha",
 	"Ian Whelan",
-	"Jegor Popovkin",
 	"Joshua Kidd",
+	"Julie Hulme",
 	"Kavya Venkatachalapathy",
-	"Martin Rodgers",
-	"Max Culley",
+	"Nathan Nekrews",
 	"Nicholas Burgoyne",
-	"Ross Fenning",
-	"Samuel Dysch",
-	"Tina Buckley"
+	"Tina Buckley",
+	"Timothy Copland",
+	"Yousaf Mahmood",
 ]
 
 messages = ["Good work!", "Well done!", "Smashed it!", "Congrats!", "Sensational!", "You're on fire!", "Wonderful!", "Outstanding!", "Marvelous!", "Tremendous!", "Wow!"]
